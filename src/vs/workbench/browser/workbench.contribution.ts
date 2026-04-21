@@ -359,11 +359,7 @@ const registry = Registry.as<IConfigurationRegistry>(ConfigurationExtensions.Con
 					localize('useModal.all', "All editors open in a centered modal overlay."),
 				],
 				'description': localize('useModal', "Controls whether editors open in a modal overlay."),
-				'default': 'off', // TODO@bpasero figure out the default
-				tags: ['experimental'],
-				experiment: {
-					mode: 'auto'
-				}
+				'default': 'some'
 			},
 			'workbench.editor.swipeToNavigate': {
 				'type': 'boolean',
@@ -620,7 +616,7 @@ const registry = Registry.as<IConfigurationRegistry>(ConfigurationExtensions.Con
 			[NotificationsSettings.NOTIFICATIONS_POSITION]: {
 				'type': 'string',
 				'enum': [NotificationsPosition.BOTTOM_RIGHT, NotificationsPosition.BOTTOM_LEFT, NotificationsPosition.TOP_RIGHT],
-				'default': product.quality !== 'stable' ? NotificationsPosition.TOP_RIGHT : NotificationsPosition.BOTTOM_RIGHT,
+				'default': NotificationsPosition.BOTTOM_RIGHT,
 				'description': localize('notificationsPosition', "Controls the position of the notification toasts and notification center."),
 				'enumDescriptions': [
 					localize('workbench.notifications.position.bottom-right', "Show notifications in the bottom right corner."),
@@ -783,6 +779,11 @@ const registry = Registry.as<IConfigurationRegistry>(ConfigurationExtensions.Con
 				'type': 'boolean',
 				'default': true,
 				'description': localize('tips.enabled', "When enabled, will show the watermark tips when no editor is open.")
+			},
+			[LayoutSettings.SHADOWS]: {
+				'type': 'boolean',
+				'default': true,
+				'description': localize('shadows', "Controls whether shadow effects are shown around the side panels and other workbench elements.")
 			},
 		}
 	});
@@ -1052,19 +1053,6 @@ Registry.as<IConfigurationMigrationRegistry>(Extensions.ConfigurationMigration)
 			const result: ConfigurationKeyValuePairs = [['zenMode.hideTabs', { value: undefined }]];
 			if (value === true) {
 				result.push(['zenMode.showTabs', { value: 'single' }]);
-			}
-			return result;
-		}
-	}]);
-
-Registry.as<IConfigurationMigrationRegistry>(Extensions.ConfigurationMigration)
-	.registerConfigurationMigrations([{
-		key: 'workbench.editor.useModal', migrateFn: (value: unknown) => {
-			const result: ConfigurationKeyValuePairs = [];
-			if (value === 'default') {
-				result.push(['workbench.editor.useModal', { value: 'some' }]);
-			} else if (value === 'on') {
-				result.push(['workbench.editor.useModal', { value: 'all' }]);
 			}
 			return result;
 		}
